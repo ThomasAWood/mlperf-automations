@@ -181,8 +181,8 @@ def postprocess(i):
     if env.get('MLC_DOCKER_EXTRA_RUN_ARGS', '') != '':
         run_opts += env['MLC_DOCKER_EXTRA_RUN_ARGS']
 
-    if is_true(env.get('MLC_DOCKER_USE_GOOGLE_DNS', '')):
-        run_opts += ' --dns 8.8.8.8 --dns 8.8.4.4 '
+#    if is_true(env.get('MLC_DOCKER_USE_GOOGLE_DNS', '')):
+#        run_opts += ' --dns 8.8.8.8 --dns 8.8.4.4 '
 
     if env.get('MLC_CONTAINER_TOOL', '') == 'podman' and env.get(
             'MLC_PODMAN_MAP_USER_ID', '').lower() not in ["no", "0", "false"]:
@@ -237,7 +237,11 @@ def postprocess(i):
     run_opts += port_map_cmd_string
 
     # Currently have problem running Docker in detached mode on Windows:
-    detached = is_true(env.get('MLC_DOCKER_DETACHED_MODE', ''))
+    # detached = is_true(env.get('MLC_DOCKER_DETACHED_MODE', ''))
+    
+    # Force detached mode
+    detached = True
+
 
 #    if detached and os_info['platform'] != 'windows':
     if detached:
@@ -279,7 +283,7 @@ def postprocess(i):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True)
-            print("Command Output:", result.stdout)
+#            print("Command Output:", result.stdout)
         except subprocess.CalledProcessError as e:
             print("Error Occurred!")
             print(f"Command: {e.cmd}")
@@ -299,7 +303,7 @@ def postprocess(i):
                 ID = line[3:]
                 env['MLC_DOCKER_CONTAINER_ID'] = ID
 
-        print(docker_out)
+        print(f"ID={env['MLC_DOCKER_CONTAINER_ID']}")
 
     else:
         x = "'"
